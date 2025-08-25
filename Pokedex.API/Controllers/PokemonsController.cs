@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Pokedex.Domain.Models;
 using Pokedex.Domain.Models.Dto;
-using Pokedex.Domain.Models.DTO;
 using Pokedex.Infrastructure;
 
 namespace Pokedex.API.Controllers
