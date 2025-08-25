@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace Pokedex.Domain.Models.DTO
+namespace Pokedex.Domain.Models.Dto
 {
-    public class AddPokemonDto
+    public class PokemonDto
     {
         [Required]
         public string Name { get; set; }

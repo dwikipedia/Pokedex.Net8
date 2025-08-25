@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pokedex.Domain.Models;
+using Pokedex.Domain.Models.Dto;
 using Pokedex.Domain.Models.DTO;
 using Pokedex.Infrastructure;
 
@@ -102,7 +102,7 @@ namespace Pokedex.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddPokemon([FromBody] AddPokemonDto dto)
+        public async Task<ActionResult> AddPokemon([FromBody] PokemonDto dto)
         {
             if (!ModelState.IsValid)
             {
@@ -147,6 +147,67 @@ namespace Pokedex.API.Controllers
                     Instance = HttpContext.Request.Path
                 });
             }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> PutPokemon(int id, [FromBody] PokemonDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var pokemon = await _pokedexContext.Pokemons.FindAsync(id);
+
+            if (pokemon == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                pokemon.Name = dto.Name;
+                pokemon.GivenName = string.IsNullOrEmpty(dto.GivenName) ? dto.Name : dto.GivenName;
+                pokemon.Gender = dto.Gender;
+                pokemon.Height = dto.Height;
+                pokemon.Weight = dto.Weight;
+                pokemon.Types = dto.Types;
+                pokemon.Weaknesses = dto.Weaknesses;
+                pokemon.SkillId = dto.SkillId;
+
+                await _pokedexContext.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                //Q: What's AsNoTracking?
+                //A: It signals clearly: “I’m just checking existence, not modifying or reusing this entity.”
+                if (!await _pokedexContext.Pokemons.AsNoTracking().AnyAsync(p => p.Id == id))
+                {
+                    return NotFound();
+                }
+
+                return Conflict(new ProblemDetails
+                {
+                    Title = "Concurrency conflict",
+                    Detail = "The Pokémon was modified by another process. Please reload and try again.",
+                    Status = 409,
+                    Instance = HttpContext.Request.Path
+                });
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeletePokemon(int id)
+        {
+            var pokemon = await _pokedexContext.Pokemons.FindAsync(id);
+
+            if (pokemon == null) return NotFound();
+
+            _pokedexContext.Pokemons.Remove(pokemon);
+            await _pokedexContext.SaveChangesAsync();
+
+            return Ok(pokemon);
         }
     }
 }
