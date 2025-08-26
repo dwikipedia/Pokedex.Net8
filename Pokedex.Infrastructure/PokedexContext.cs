@@ -33,7 +33,13 @@ namespace Pokedex.Infrastructure
                             new { PokemonId = 4, ElementId = 4 }, // Onix → Rock
                             new { PokemonId = 4, ElementId = 5 }, // Onix → Ground
                             new { PokemonId = 5, ElementId = 6 }, // Gengar → Ghost
-                            new { PokemonId = 5, ElementId = 7 }  // Gengar → Poison
+                            new { PokemonId = 5, ElementId = 7 },  // Gengar → Poison
+                            new { PokemonId = 6, ElementId = 1 }, // Charizard → Fire
+                            new { PokemonId = 6, ElementId = 14 }, // Charizard → Flying
+                            new { PokemonId = 7, ElementId = 2 }, // Lapras → Water
+                            new { PokemonId = 7, ElementId = 9 }, // Lapras → Ice
+                            new { PokemonId = 8, ElementId = 15 }, // Scizor → Bug
+                            new { PokemonId = 8, ElementId = 16 }  // Scizor → Steel
                         );
                     });
 
@@ -47,12 +53,12 @@ namespace Pokedex.Infrastructure
                     je =>
                     {
                         je.HasData(
-                            new { PokemonId = 1, ElementId = 2 }, // Water
-                            new { PokemonId = 1, ElementId = 4 }, // Rock
-                            new { PokemonId = 1, ElementId = 5 }, // Ground
-                            new { PokemonId = 2, ElementId = 5 }, // Ground
-                            new { PokemonId = 3, ElementId = 3 }, // Electric
-                            new { PokemonId = 3, ElementId = 9 }, // Grass
+                            new { PokemonId = 1, ElementId = 2 },
+                            new { PokemonId = 1, ElementId = 4 },
+                            new { PokemonId = 1, ElementId = 5 },
+                            new { PokemonId = 2, ElementId = 5 },
+                            new { PokemonId = 3, ElementId = 3 },
+                            new { PokemonId = 3, ElementId = 9 },
                             new { PokemonId = 4, ElementId = 2 },
                             new { PokemonId = 4, ElementId = 9 },
                             new { PokemonId = 4, ElementId = 10 },
@@ -62,7 +68,14 @@ namespace Pokedex.Infrastructure
                             new { PokemonId = 5, ElementId = 8 },
                             new { PokemonId = 5, ElementId = 5 },
                             new { PokemonId = 5, ElementId = 6 },
-                            new { PokemonId = 5, ElementId = 13 }
+                            new { PokemonId = 5, ElementId = 13 },
+                            new { PokemonId = 6, ElementId = 2 },
+                            new { PokemonId = 6, ElementId = 9 },
+                            new { PokemonId = 6, ElementId = 5 },
+                            new { PokemonId = 7, ElementId = 3 },
+                            new { PokemonId = 7, ElementId = 6 },
+                            new { PokemonId = 8, ElementId = 1 },
+                            new { PokemonId = 8, ElementId = 17 }
                         );
                     });
 

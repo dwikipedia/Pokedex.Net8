@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Pokedex.Domain.Models.Dto
 {
-    public class PokemonCriteriaDto
+    public class PokemonCriteriaDto : QueryParameters
     {
         public string? Name { get; set; }
         public string? GivenName { get; set; }

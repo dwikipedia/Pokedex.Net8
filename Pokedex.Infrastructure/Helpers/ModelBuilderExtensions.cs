@@ -99,6 +99,36 @@ namespace Pokedex.Infrastructure.Helpers
                     Weight = 40.5,
                     Gender = Gender.Female,
                     SkillId = 4
+                },
+                new Pokemon
+                {
+                    Id = 6,
+                    GivenName = "Blazetail",
+                    Name = "Charizard",
+                    Height = 1.7m,
+                    Weight = 90.5,
+                    Gender = Gender.Male,
+                    SkillId = 2
+                },
+                new Pokemon
+                {
+                    Id = 7,
+                    GivenName = "Stormshell",
+                    Name = "Lapras",
+                    Height = 2.5m,
+                    Weight = 220.0,
+                    Gender = Gender.Female,
+                    SkillId = 3
+                },
+                new Pokemon
+                {
+                    Id = 8,
+                    GivenName = "Ironhide",
+                    Name = "Scizor",
+                    Height = 1.8m,
+                    Weight = 118.0,
+                    Gender = Gender.Male,
+                    SkillId = 5
                 }
             );
         }

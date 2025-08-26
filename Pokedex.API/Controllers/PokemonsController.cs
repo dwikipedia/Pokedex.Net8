@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Pokedex.Domain.Models;
 using Pokedex.Domain.Models.Dto;
 using Pokedex.Infrastructure;
+using Pokedex.Infrastructure.Extensions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Pokedex.API.Controllers
 {
@@ -19,30 +21,15 @@ namespace Pokedex.API.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<ActionResult> GetAllPokemon()
+        public async Task<ActionResult> GetAllPokemon([FromQuery] QueryParameters param)
         {
-            var pokemons = await _pokedexContext.Pokemons
+            IQueryable<Pokemon> pokemons = _pokedexContext.Pokemons
                 .Include(p => p.Types)
-                .Include(p => p.Weaknesses)
-                .ToArrayAsync();
+                .Include(p => p.Weaknesses);
 
-            return Ok(pokemons);
-        }
+            pokemons = pokemons.ApplySorting(param.SortBy, param.SortDescending);
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult> GetPokemonById(int id)
-        {
-            var pokemon = await _pokedexContext.Pokemons
-                .Include(p => p.Types)
-                .Include(p => p.Weaknesses)
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (pokemon == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(pokemon);
+            return Ok(await pokemons.ToArrayAsync());
         }
 
         [HttpGet]
@@ -86,7 +73,13 @@ namespace Pokedex.API.Controllers
                 query = query.Where(p => p.Weaknesses.Any(w => loweredWeaknesses.Contains(w.Name.ToLower())));
             }
 
-            var results = await query.ToListAsync();
+            query = query.ApplySorting(dto.SortBy, dto.SortDescending);
+
+            var results = await query
+                .Skip(dto.Size * (dto.Page - 1))
+                .Take(dto.Size)
+                .ToListAsync();
+
             if (results.Count == 0)
             {
                 return NotFound(new
@@ -98,6 +91,22 @@ namespace Pokedex.API.Controllers
             }
 
             return Ok(results);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetPokemonById(int id)
+        {
+            var pokemon = await _pokedexContext.Pokemons
+                .Include(p => p.Types)
+                .Include(p => p.Weaknesses)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (pokemon == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(pokemon);
         }
 
         [HttpPost]
