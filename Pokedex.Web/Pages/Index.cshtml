@@ -1,0 +1,63 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Pokédex</h1>
+    <small class="text-muted">
+        a digital encyclopedia of Pokémon—it’s one of the most iconic tools in the Pokémon universe.
+        Pokedex helps you to catalog and learn about every Pokémon they encounter.
+    </small>
+
+    <table class="table table-striped table-bordered mt-4">
+        <thead class="table-dark">
+            <tr>
+                <th>Name</th>
+                <th>Given Name</th>
+            </tr>
+        </thead>
+        <tbody id="pokemon-table-body"></tbody>
+    </table>
+
+</div>
+
+
+@section Scripts {
+    <script>
+        const apiVersion = "2.0";
+        const versionSegment = `v${apiVersion.split('.')[0]}`;
+        const url = `https://localhost:7224/api/${versionSegment}/Pokemons`;
+
+
+        const tableBody = document.getElementById('pokemon-table-body');
+
+        fetch(url, {
+            headers: {
+               "X-API-Version": apiVersion
+            }
+        })
+        .then(resp => resp.json())
+        .then(data => showData(data))
+        .catch(ex => {
+            console.log("Fetch error:", ex);
+        });
+
+        function showData(data) {
+            data.forEach(pokemon => {
+                const row = document.createElement('tr');
+
+                const nameCell = document.createElement('td');
+                nameCell.textContent = pokemon.name;
+
+                const givenNameCell = document.createElement('td');
+                givenNameCell.textContent = pokemon.givenName;
+
+                row.appendChild(nameCell);
+                row.appendChild(givenNameCell);
+                tableBody.appendChild(row);
+            });
+        }
+    </script>
+}
