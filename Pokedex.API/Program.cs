@@ -63,16 +63,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-//builder.Services.AddCors(options =>
-//{
-//    options.AddDefaultPolicy(policy =>
-//    {
-//        policy.WithOrigins("https://localhost:44368") // your frontend origin
-//              .AllowAnyHeader()
-//              .AllowAnyMethod();
-//    });
-//});
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
