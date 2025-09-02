@@ -3,15 +3,27 @@
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("login-form");
     const errorDiv = document.getElementById("login-error");
+    const token = localStorage.getItem("jwtToken");
+    const isLoggedIn = token && !isTokenExpired(token);
 
-    if (form !== null) {
+    document.querySelectorAll(".auth-only").forEach(el => {
+        el.style.display = isLoggedIn ? "block" : "none";
+    });
+
+    if (isLoggedIn) {
+        const logoutLink = document.querySelector(".auth-only a[href='javascript:void(0);']");
+        if (logoutLink) {
+            logoutLink.addEventListener("click", logout);
+        }
+    }
+
+    if (form) {
         form.addEventListener("submit", async function (e) {
             e.preventDefault();
 
             const username = document.getElementById("username").value.trim();
             const password = document.getElementById("password").value;
 
-            // Clear previous error
             errorDiv.style.display = "none";
             errorDiv.textContent = "";
 
@@ -66,8 +78,13 @@ export function isTokenExpired(token) {
     }
 }
 
+export async function logout() {
+    //try {
+    //    await fetch('/api/logout', { method: 'POST' }); // optional
+    //} catch (err) {
+    //    console.warn("Logout API failed:", err);
+    //}
 
-export function logout() {
     localStorage.removeItem("jwtToken");
     window.location.href = "/Login";
 }
