@@ -1,12 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Pokedex.Client.Pages
 {
-    public class IndexModel : PageModel
+    [AllowAnonymous]
+    public class LoginModel : PageModel
     {
         public void OnGet()
         {
         }
     }
-
 }

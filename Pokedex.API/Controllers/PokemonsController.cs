@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pokedex.Domain.Models;
@@ -11,6 +12,7 @@ namespace Pokedex.API.Controllers
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/Pokemons")]
     [ApiController]
+    [Authorize]
     public class PokemonsController : ControllerBase
     {
         private readonly PokedexContext _pokedexContext;
@@ -23,6 +25,7 @@ namespace Pokedex.API.Controllers
 
         [HttpGet("all")]
         [MapToApiVersion("1.0")]
+        [AllowAnonymous]
         public async Task<ActionResult> GetAllPokemon()
         {
             IQueryable<Pokemon> pokemons = _pokedexContext.Pokemons
@@ -35,6 +38,7 @@ namespace Pokedex.API.Controllers
         [HttpGet]
         [MapToApiVersion("1.0")]
         [MapToApiVersion("2.0")]
+        [AllowAnonymous]
         public async Task<ActionResult> GetPokemonByCriteria([FromQuery] PokemonCriteriaV1Dto dto)
         {
             var query = _pokedexContext.Pokemons
@@ -92,6 +96,7 @@ namespace Pokedex.API.Controllers
         [HttpGet("{id}")]
         [MapToApiVersion("1.0")]
         [MapToApiVersion("2.0")]
+        [AllowAnonymous]
         public async Task<ActionResult> GetPokemonById(int id)
         {
             var pokemon = await _pokedexContext.Pokemons
@@ -226,6 +231,7 @@ namespace Pokedex.API.Controllers
     [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/Pokemons")]
     [ApiController]
+    [Authorize]
     public class PokemonsV2Controller : ControllerBase
     {
         private readonly PokedexContext _pokedexContext;
@@ -238,6 +244,7 @@ namespace Pokedex.API.Controllers
 
         [HttpGet("all")]
         [MapToApiVersion("2.0")]
+        [AllowAnonymous]
         public async Task<ActionResult> GetAllPokemon([FromQuery] QueryParameters param)
         {
             IQueryable<Pokemon> pokemons = _pokedexContext.Pokemons
@@ -251,6 +258,7 @@ namespace Pokedex.API.Controllers
 
         [HttpGet]
         [MapToApiVersion("2.0")]
+        [AllowAnonymous]
         public async Task<ActionResult> GetPokemonByCriteria([FromQuery] PokemonCriteriaV2Dto dto)
         {
             var query = _pokedexContext.Pokemons

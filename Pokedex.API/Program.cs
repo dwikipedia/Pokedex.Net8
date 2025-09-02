@@ -1,17 +1,18 @@
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
-using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Pokedex.API.Helpers;
 using Pokedex.Infrastructure;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApiVersioning(options =>
 {
-    options.DefaultApiVersion = new Asp.Versioning.ApiVersion(1, 0);
+    options.DefaultApiVersion = new ApiVersion(1, 0);
     options.AssumeDefaultVersionWhenUnspecified = true;
     options.ReportApiVersions = true;
     options.ApiVersionReader = ApiVersionReader.Combine(
@@ -24,6 +25,25 @@ builder.Services.AddApiVersioning(options =>
         options.GroupNameFormat = "'v'VVV";
         options.SubstituteApiVersionInUrl = true;
     });
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = "PokedexAPIByDotnetWiki",
+            ValidAudience = "PokedexClientByDotnetWiki",
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes("charmanderXDotnetWiki"))
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddHsts(options =>
 {
@@ -59,6 +79,9 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(builder =>
     {
         builder.WithOrigins("https://localhost:7060", "http://localhost:5052")
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials()
         .WithHeaders("X-API-Version");
     });
 });
@@ -88,6 +111,7 @@ app.UseHttpsRedirection();
 
 app.UseCors();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

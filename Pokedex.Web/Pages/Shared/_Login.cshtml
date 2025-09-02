@@ -1,0 +1,43 @@
+﻿<style>
+    #login-container {
+        max-width: 400px;
+        margin: 2rem auto;
+        padding: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+
+    #login-form label {
+        display: block;
+        margin-top: 1rem;
+    }
+
+    #login-form input {
+        width: 100%;
+        padding: 0.5rem;
+        margin-top: 0.25rem;
+    }
+
+    #login-form button {
+        margin-top: 1rem;
+        padding: 0.5rem 1rem;
+    }
+</style>
+
+<div id="login-container">
+    <h2>Trainer Login</h2>
+    <form id="login-form">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required />
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required />
+
+        <button type="submit">Login</button>
+    </form>
+
+    <div id="login-error" style="color: red; display: none;"></div>
+</div>
+
+<script type="module" src="~/js/services/vanilla/login.js"></script>
