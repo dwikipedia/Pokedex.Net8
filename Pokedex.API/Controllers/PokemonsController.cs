@@ -1,13 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pokedex.Domain.Models;
 using Pokedex.Domain.Models.Dto;
 using Pokedex.Infrastructure;
+using Pokedex.Infrastructure.Extensions;
 
 namespace Pokedex.API.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/Pokemons")]
     [ApiController]
+    [Authorize]
     public class PokemonsController : ControllerBase
     {
         private readonly PokedexContext _pokedexContext;
@@ -19,34 +24,22 @@ namespace Pokedex.API.Controllers
         }
 
         [HttpGet("all")]
+        [MapToApiVersion("1.0")]
+        [AllowAnonymous]
         public async Task<ActionResult> GetAllPokemon()
         {
-            var pokemons = await _pokedexContext.Pokemons
+            IQueryable<Pokemon> pokemons = _pokedexContext.Pokemons
                 .Include(p => p.Types)
-                .Include(p => p.Weaknesses)
-                .ToArrayAsync();
+                .Include(p => p.Weaknesses);
 
-            return Ok(pokemons);
-        }
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult> GetPokemonById(int id)
-        {
-            var pokemon = await _pokedexContext.Pokemons
-                .Include(p => p.Types)
-                .Include(p => p.Weaknesses)
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (pokemon == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(pokemon);
+            return Ok(await pokemons.ToArrayAsync());
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetPokemonByCriteria([FromQuery] PokemonCriteriaDto dto)
+        [MapToApiVersion("1.0")]
+        [MapToApiVersion("2.0")]
+        [AllowAnonymous]
+        public async Task<ActionResult> GetPokemonByCriteria([FromQuery] PokemonCriteriaV1Dto dto)
         {
             var query = _pokedexContext.Pokemons
                 .Include(p => p.Types)
@@ -100,7 +93,28 @@ namespace Pokedex.API.Controllers
             return Ok(results);
         }
 
+        [HttpGet("{id}")]
+        [MapToApiVersion("1.0")]
+        [MapToApiVersion("2.0")]
+        [AllowAnonymous]
+        public async Task<ActionResult> GetPokemonById(int id)
+        {
+            var pokemon = await _pokedexContext.Pokemons
+                .Include(p => p.Types)
+                .Include(p => p.Weaknesses)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (pokemon == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(pokemon);
+        }
+
         [HttpPost]
+        [MapToApiVersion("1.0")]
+        [MapToApiVersion("2.0")]
         public async Task<ActionResult> AddPokemon([FromBody] PokemonDto dto)
         {
             if (!ModelState.IsValid)
@@ -149,6 +163,8 @@ namespace Pokedex.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [MapToApiVersion("1.0")]
+        [MapToApiVersion("2.0")]
         public async Task<ActionResult> PutPokemon(int id, [FromBody] PokemonDto dto)
         {
             if (!ModelState.IsValid)
@@ -197,6 +213,8 @@ namespace Pokedex.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [MapToApiVersion("1.0")]
+        [MapToApiVersion("2.0")]
         public async Task<ActionResult> DeletePokemon(int id)
         {
             var pokemon = await _pokedexContext.Pokemons.FindAsync(id);
@@ -207,6 +225,98 @@ namespace Pokedex.API.Controllers
             await _pokedexContext.SaveChangesAsync();
 
             return Ok(pokemon);
+        }
+    }
+
+    [ApiVersion("2.0")]
+    [Route("api/v{version:apiVersion}/Pokemons")]
+    [ApiController]
+    [Authorize]
+    public class PokemonsV2Controller : ControllerBase
+    {
+        private readonly PokedexContext _pokedexContext;
+
+        public PokemonsV2Controller(PokedexContext pokedexContext)
+        {
+            _pokedexContext = pokedexContext;
+            _pokedexContext.Database.EnsureCreated();
+        }
+
+        [HttpGet("all")]
+        [MapToApiVersion("2.0")]
+        [AllowAnonymous]
+        public async Task<ActionResult> GetAllPokemon([FromQuery] QueryParameters param)
+        {
+            IQueryable<Pokemon> pokemons = _pokedexContext.Pokemons
+                .Include(p => p.Types)
+                .Include(p => p.Weaknesses);
+
+            pokemons = pokemons.ApplySorting(param.SortBy, param.SortDescending);
+
+            return Ok(await pokemons.ToArrayAsync());
+        }
+
+        [HttpGet]
+        [MapToApiVersion("2.0")]
+        [AllowAnonymous]
+        public async Task<ActionResult> GetPokemonByCriteria([FromQuery] PokemonCriteriaV2Dto dto)
+        {
+            var query = _pokedexContext.Pokemons
+                .Include(p => p.Types)
+                .Include(p => p.Weaknesses)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(dto.Name))
+                query = query.Where(p => p.Name.ToLower().Contains(dto.Name.ToLower()));
+
+            if (!string.IsNullOrEmpty(dto.GivenName))
+                query = query.Where(p => p.GivenName.ToLower().Contains(dto.GivenName.ToLower()));
+
+            if (dto.HeightMin.HasValue)
+                query = query.Where(p => p.Height >= dto.HeightMin.Value);
+
+            if (dto.HeightMax.HasValue)
+                query = query.Where(p => p.Height <= dto.HeightMax.Value);
+
+            if (dto.WeightMin.HasValue)
+                query = query.Where(p => p.Weight >= dto.WeightMin.Value);
+
+            if (dto.WeightMax.HasValue)
+                query = query.Where(p => p.Weight <= dto.WeightMax.Value);
+
+            if (dto.Gender.HasValue)
+                query = query.Where(p => p.Gender == dto.Gender.Value);
+
+            if (dto.Types?.Count > 0)
+            {
+                var loweredTypes = dto.Types.Select(t => t.ToLower()).ToList();
+                query = query.Where(p => p.Types.Any(t => loweredTypes.Contains(t.Name.ToLower())));
+            }
+
+            if (dto.Weaknesses?.Count > 0)
+            {
+                var loweredWeaknesses = dto.Weaknesses.Select(w => w.ToLower()).ToList();
+                query = query.Where(p => p.Weaknesses.Any(w => loweredWeaknesses.Contains(w.Name.ToLower())));
+            }
+
+            query = query.ApplySorting(dto.SortBy, dto.SortDescending);
+
+            var results = await query
+                .Skip(dto.Size * (dto.Page - 1))
+                .Take(dto.Size)
+                .ToListAsync();
+
+            if (results.Count == 0)
+            {
+                return NotFound(new
+                {
+                    Message = "No Pokémon matched the search criteria.",
+                    Timestamp = DateTime.UtcNow,
+                    Criteria = dto
+                });
+            }
+
+            return Ok(results);
         }
     }
 }

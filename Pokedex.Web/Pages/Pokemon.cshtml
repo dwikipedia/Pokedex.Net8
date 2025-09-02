@@ -1,0 +1,30 @@
+﻿@page
+@using Pokedex.Client.Pages
+@model PokemonModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Pokédex</h1>
+    <small class="text-muted">
+        a digital encyclopedia of Pokémon—it’s one of the most iconic tools in the Pokémon universe.
+        Pokedex helps you to catalog and learn about every Pokémon they encounter.
+    </small>
+
+    <div id="loading-message" style="display:none;">Loading Pokémon...</div>
+    <div id="error-message" style="display:none; color:red;"></div>
+
+    <table class="table table-striped table-bordered mt-4">
+        <thead class="table-dark">
+            <tr>
+                <th>Name</th>
+                <th>Given Name</th>
+            </tr>
+        </thead>
+        <tbody id="pokemon-table-body"></tbody>
+    </table>
+
+</div>
+
+<script type="module" src="/js/services/vanilla/pokemon.js"></script>

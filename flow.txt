@@ -1,0 +1,9 @@
+Clean Architecture
+==================
+
+🔄 How It All Connects
+- Pokedex.Web → calls API
+- Pokedex.API → controller calls IPokemonService
+- Pokedex.Application → defines service/repo interfaces
+- Pokedex.Infrastructure → implements those interfaces
+- Pokedex.Domain → holds core entities
