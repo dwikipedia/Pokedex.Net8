@@ -13,6 +13,31 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pokedex.Client", "Pokedex.W
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pokedex.Application", "Pokedex.Application\Pokedex.Application.csproj", "{24014F25-27B1-4827-A1C6-0EB4703E3214}"
 EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "pokedex.reactui", "pokedex.reactui\", "{4CEB3F2C-CD97-69B5-762E-4C50C5632A7D}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_60065"
+		Debug.AspNetCompiler.PhysicalPath = "pokedex.reactui\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_60065\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_60065"
+		Release.AspNetCompiler.PhysicalPath = "pokedex.reactui\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_60065\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "60065"
+		SlnRelativePath = "pokedex.reactui\"
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{DA9583CD-ED40-41EF-8EA0-A494928EBA2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,9 +64,21 @@ Global
 		{24014F25-27B1-4827-A1C6-0EB4703E3214}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24014F25-27B1-4827-A1C6-0EB4703E3214}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24014F25-27B1-4827-A1C6-0EB4703E3214}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CEB3F2C-CD97-69B5-762E-4C50C5632A7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CEB3F2C-CD97-69B5-762E-4C50C5632A7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CEB3F2C-CD97-69B5-762E-4C50C5632A7D}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CEB3F2C-CD97-69B5-762E-4C50C5632A7D}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BE213601-BF63-482C-AE5D-EB7FDE569CB6} = {DA9583CD-ED40-41EF-8EA0-A494928EBA2B}
+		{DD74ED5D-1605-43F0-B1CE-463FD8DD6CFC} = {DA9583CD-ED40-41EF-8EA0-A494928EBA2B}
+		{FE156971-027B-4377-83FB-8CCDAB3459D3} = {DA9583CD-ED40-41EF-8EA0-A494928EBA2B}
+		{AC3F5B61-48F7-48F9-A6E7-CFB2C01C7B9B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{24014F25-27B1-4827-A1C6-0EB4703E3214} = {DA9583CD-ED40-41EF-8EA0-A494928EBA2B}
+		{4CEB3F2C-CD97-69B5-762E-4C50C5632A7D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8465866A-372A-488D-A6B1-D95EDDDA5A69}

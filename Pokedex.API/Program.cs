@@ -74,15 +74,16 @@ builder.Services.AddDbContext<PokedexContext>(options =>
     options.UseInMemoryDatabase("Pokedex");
 });
 
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
     {
-        builder.WithOrigins("https://localhost:7060", "http://localhost:5052")
+        builder.WithOrigins(allowedOrigins)
         .AllowAnyHeader()
         .AllowAnyMethod()
-        .AllowCredentials()
-        .WithHeaders("X-API-Version");
+        .AllowCredentials();
     });
 });
 
@@ -115,5 +116,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
 app.Run();

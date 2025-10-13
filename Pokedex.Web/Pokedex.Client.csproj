@@ -30,4 +30,8 @@
     <ProjectReference Include="..\Pokedex.Infrastructure\Pokedex.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\js\services\express\" />
+  </ItemGroup>
+
 </Project>
